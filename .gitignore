@@ -1,3 +1,6 @@
+#IDE
+.history
+
 # ipfs can generate profiling dump files
 *.cpuprof
 *.memprof

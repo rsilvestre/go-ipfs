@@ -1,7 +1,9 @@
-version: '3.8'
+version: '2'
 services:
   ipfs:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.balena
     restart: unless-stopped
     volumes:
       - ipfs_path:/data/ipfs
@@ -10,18 +12,19 @@ services:
     environment:
       - IPFS_PATH=/data/ipfs
     ports:
-      # Swarm listens on all interfaces, so is remotely reachable.
       - 4001:4001/tcp
       - 4001:4001/udp
-      
-      # The following ports only listen on the loopback interface, so are not remotely reachable by default.
-      # If you want to override these or add more ports, see https://docs.docker.com/compose/extends/ .
-      
-      # API port, which includes admin operations, so you probably don't want this remotely accessible.
       - 127.0.0.1:5001:5001
-      
-      # HTTP Gateway
       - 127.0.0.1:8080:8080
+      - 127.0.0.1:8081:8081
+    privileged: true
+    network_mode: host
+    labels:
+      io.balena.features.kernel-modules: '1'
+      io.balena.features.firmware: '1'
+      io.balena.features.dbus: '1'
+      io.balena.features.supervisor-api: '1'
+      io.balena.features.balena-api: '1'
 volumes:
   ipfs_path:
   ipfs_fuse:
